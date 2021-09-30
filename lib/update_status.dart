@@ -7,19 +7,24 @@ import 'package:flutter/material.dart';
 import 'package:todo_app/status_service.dart';
 
 class UpdateStatusPage extends StatefulWidget {
+
+  var anan;
+  UpdateStatusPage(this.anan);
+
   @override
   _UpdateStatusPageState createState() => _UpdateStatusPageState();
 }
 
 class _UpdateStatusPageState extends State<UpdateStatusPage> {
+
+
+  // but my business works here
+
   TextEditingController gorevBaslikController = TextEditingController();
   TextEditingController gorevIcerikController = TextEditingController();
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   FirebaseAuth auth = FirebaseAuth.instance;
   StatusService getStatus = StatusService();
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -53,8 +58,9 @@ class _UpdateStatusPageState extends State<UpdateStatusPage> {
             ),
             SizedBox(height: 15),
             ElevatedButton(
+
               onPressed: (){
-                getStatus.addTask(gorevBaslikController.text, gorevIcerikController.text);
+                getStatus.updateStatus(widget.anan,gorevBaslikController.text,gorevIcerikController.text);
               },
               child: Text(
                 "Güncelle",

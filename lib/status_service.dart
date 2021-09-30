@@ -35,7 +35,7 @@ class StatusService {
         .doc('${auth.currentUser?.email}')
         .collection("tasks");
 
-    var addDocument = getFirestore.doc('${gorevBaslikController}').set({
+    var addDocument = getFirestore.doc().set({
       'GorevBaslik': gorevBaslikController,
       'GorevIcerik': gorevIcerikController,
       //'KullaniciMail': auth.currentUser?.email,
@@ -101,17 +101,22 @@ class StatusService {
     print(allData);
   }
 
-  updateStatus(String gorevBaslikController, String gorevIcerikController) {
-    firestore
-        .collection('Tasks')
+  Future<void>updateStatus(String docId, String gorevBaslikController, String gorevIcerikController) async {
+   return await firestore
+        .collection('Task')
         .doc('${auth.currentUser?.email}')
         .collection('tasks')
-        .doc()
+        .doc(docId)
         .update({
       'GorevBaslik': gorevBaslikController,
       'GorevIcerik': gorevIcerikController,
 
 
     });
+}
+
+  updateTasks(String docId){
+    String asf;
+
   }
 }

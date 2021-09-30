@@ -18,6 +18,7 @@ class _MainScreenState extends State<MainScreen> {
       .collection('tasks')
       .snapshots();
 
+
   StatusService authService = StatusService();
 
   @override
@@ -25,14 +26,7 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          IconButton(
-              icon: Icon(Icons.edit),
-              onPressed: () async {
-                await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => UpdateStatusPage()));
-              }),
+
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -68,19 +62,21 @@ class _MainScreenState extends State<MainScreen> {
                     spacing: 12, // space between two icons
                     children: <Widget>[
                       IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () async {
+                            var anan = document.id;
+                            authService.updateTasks(document.id);
+                            await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => UpdateStatusPage(document.id,)));
+                          }),
+                      IconButton(
                         icon: Icon(Icons.remove),
                         onPressed: () async {
-                          authService.removeStatus(document.id);
-                          // var collection =
-                          // FirebaseFirestore.instance
-                          //     .collection('Task') // Task collection
-                          //     .doc('${FirebaseAuth.instance.currentUser!.email}') // Maillerin geldiği döküman
-                          //     .collection('tasks') // tasks collection
-                          //     .doc(document.id); // silmek istediğim döküman
-                          //
-                          // await collection
-                          //       .delete();
-                        },
+                          // print(document.id);
+                          authService.removeStatus(document.id); //auth olarak değil status olarak değiştir service adını
+                          },
                       ), // icon-2
                     ],
                   ),
@@ -93,3 +89,5 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 }
+
+
