@@ -1,34 +1,21 @@
 //this page is not working.
 
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_app/status_service.dart';
 
-class UpdateStatus extends StatefulWidget {
+class UpdateStatusPage extends StatefulWidget {
   @override
-  _UpdateStatusState createState() => _UpdateStatusState();
+  _UpdateStatusPageState createState() => _UpdateStatusPageState();
 }
 
-class _UpdateStatusState extends State<UpdateStatus> {
-
+class _UpdateStatusPageState extends State<UpdateStatusPage> {
   TextEditingController gorevBaslikController = TextEditingController();
   TextEditingController gorevIcerikController = TextEditingController();
-
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   FirebaseAuth auth = FirebaseAuth.instance;
-
-  updateStatus(docId){
-    DocumentReference guncellenecekDokuman = firestore.collection('Task').doc('${auth.currentUser!.email}').collection('tasks').doc(docId);
-
-    guncellenecekDokuman.update({
-      'GorevBaslik': gorevBaslikController.text,
-      'GorevIcerik': gorevIcerikController.text,
-    });
-
-  }
-
-
   StatusService getStatus = StatusService();
 
 
@@ -55,21 +42,19 @@ class _UpdateStatusState extends State<UpdateStatus> {
             TextFormField(
               controller: gorevBaslikController,
               decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.edit), labelText: "Görev Başlığı"),
+                  prefixIcon: Icon(Icons.edit), labelText: "Güncellemek istediğiniz görev başlığı"),
             ),
             TextFormField(
               controller: gorevIcerikController,
               decoration: InputDecoration(
                   prefixIcon: Icon(Icons.article_rounded),
-                  labelText: "Görev İçeriği"),
+                  labelText: "Yeni görev içeriği"),
               maxLines: 3,
             ),
             SizedBox(height: 15),
             ElevatedButton(
               onPressed: (){
-                FirebaseFirestore.instance.collection('Task').doc('${FirebaseAuth.instance.currentUser!.email}').collection('tasks').snapshots();
-
-                getStatus.updateStatus('docidgir', gorevBaslikController.text,gorevIcerikController.text);
+                getStatus.addTask(gorevBaslikController.text, gorevIcerikController.text);
               },
               child: Text(
                 "Güncelle",

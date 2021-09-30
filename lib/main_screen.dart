@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -13,28 +12,40 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-
-
-  final Stream<QuerySnapshot> _usersStream =  FirebaseFirestore.instance.collection('Task').doc('${FirebaseAuth.instance.currentUser!.email}').collection('tasks').snapshots();
+  final Stream<QuerySnapshot> _usersStream = FirebaseFirestore.instance
+      .collection('Task')
+      .doc('${FirebaseAuth.instance.currentUser!.email}')
+      .collection('tasks')
+      .snapshots();
 
   StatusService authService = StatusService();
-
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(actions: [],),
+      appBar: AppBar(
+        actions: [
+          IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: () async {
+                await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => UpdateStatusPage()));
+              }),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>AddTaskScreen()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => AddTaskScreen()));
         },
         child: Icon(
           Icons.add,
           color: Colors.white,
         ),
       ),
-      body:StreamBuilder<QuerySnapshot>(
+      body: StreamBuilder<QuerySnapshot>(
         stream: _usersStream,
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
@@ -48,7 +59,7 @@ class _MainScreenState extends State<MainScreen> {
           return ListView(
             children: snapshot.data!.docs.map((DocumentSnapshot document) {
               Map<String, dynamic> data =
-              document.data()! as Map<String, dynamic>;
+                  document.data()! as Map<String, dynamic>;
               return Card(
                 child: ListTile(
                   title: Text(data['GorevBaslik']),
@@ -56,22 +67,21 @@ class _MainScreenState extends State<MainScreen> {
                   trailing: Wrap(
                     spacing: 12, // space between two icons
                     children: <Widget>[
-                      IconButton(icon:Icon(Icons.edit), onPressed:(){
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=> UpdateStatus()));
-                      }
-                      ), // icon-1
-                      IconButton(icon:Icon(Icons.remove), onPressed:() async {
-                        authService.removeStatus(document.id);
-                        // var collection =
-                        // FirebaseFirestore.instance
-                        //     .collection('Task') // Task collection
-                        //     .doc('${FirebaseAuth.instance.currentUser!.email}') // Maillerin geldiği döküman
-                        //     .collection('tasks') // tasks collection
-                        //     .doc(document.id); // silmek istediğim döküman
-                        //
-                        // await collection
-                        //       .delete();
-            }, ), // icon-2
+                      IconButton(
+                        icon: Icon(Icons.remove),
+                        onPressed: () async {
+                          authService.removeStatus(document.id);
+                          // var collection =
+                          // FirebaseFirestore.instance
+                          //     .collection('Task') // Task collection
+                          //     .doc('${FirebaseAuth.instance.currentUser!.email}') // Maillerin geldiği döküman
+                          //     .collection('tasks') // tasks collection
+                          //     .doc(document.id); // silmek istediğim döküman
+                          //
+                          // await collection
+                          //       .delete();
+                        },
+                      ), // icon-2
                     ],
                   ),
                 ),

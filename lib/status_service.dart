@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Status {
   String id;
+
   //String status;
   //String image;
 
@@ -14,8 +15,8 @@ class Status {
   factory Status.fromSnapshot(DocumentSnapshot snapshot) {
     return Status(
       id: snapshot.id,
-     // status: snapshot["status"],
-     // image: snapshot["image"],
+      // status: snapshot["status"],
+      // image: snapshot["image"],
     );
   }
 }
@@ -29,29 +30,36 @@ class StatusService {
 
   // Görev ekle
   addTask(String gorevBaslikController, String gorevIcerikController) async {
-    var getFirestore = await firestore.collection('Task').doc(
-        '${auth.currentUser?.email}')
+    var getFirestore = await firestore
+        .collection('Task')
+        .doc('${auth.currentUser?.email}')
         .collection("tasks");
 
-    var addStatus = await getFirestore.add({
+    var addDocument = getFirestore.doc('${gorevBaslikController}').set({
       'GorevBaslik': gorevBaslikController,
       'GorevIcerik': gorevIcerikController,
       //'KullaniciMail': auth.currentUser?.email,
-      'kullaniciUid': auth.currentUser?.uid,}
-    );
-    return addStatus;
-  }
+      'kullaniciUid': auth.currentUser?.uid,
+    });
 
+    return addDocument;
+
+    // var addStatus = await getFirestore.add({
+    //   'GorevBaslik': gorevBaslikController,
+    //   'GorevIcerik': gorevIcerikController,
+    //   //'KullaniciMail': auth.currentUser?.email,
+    //   'kullaniciUid': auth.currentUser?.uid,}
+    // );
+    // return addStatus;
+  }
 
   //Üye ol
   Future<void> createUser(String mailController, String sifreController,
       isimController, soyIsimController) async {
     await auth
         .createUserWithEmailAndPassword(
-        email: mailController, password: sifreController)
-        .then(
-            (kullanici) =>
-            FirebaseFirestore.instance
+            email: mailController, password: sifreController)
+        .then((kullanici) => FirebaseFirestore.instance
                 .collection('Kullanicilar')
                 .doc(mailController)
                 .set({
@@ -70,20 +78,18 @@ class StatusService {
   }
 
   removeStatus(String docId) async {
-    var collection =
-    FirebaseFirestore.instance
+    var collection = FirebaseFirestore.instance
         .collection('Task') // Task collection
-        .doc('${FirebaseAuth.instance.currentUser!
-        .email}') // Maillerin geldiği döküman
+        .doc(
+            '${FirebaseAuth.instance.currentUser!.email}') // Maillerin geldiği döküman
         .collection('tasks') // tasks collection
         .doc(docId); // silmek istediğim döküman
 
-    return await collection
-        .delete();
+    return await collection.delete();
   }
 
   CollectionReference docRef =
-  FirebaseFirestore.instance.collection('collection');
+      FirebaseFirestore.instance.collection('collection');
 
   Future<void> getData() async {
     // Get docs from collection reference
@@ -95,22 +101,17 @@ class StatusService {
     print(allData);
   }
 
-  updateStatus(String docId, String gorevBaslikController,
-      String gorevIcerikController) async {
-    var collection =
-    FirebaseFirestore.instance
-        .collection('Task') // Task collection
-        .doc('${FirebaseAuth.instance.currentUser!
-        .email}') // Maillerin geldiği döküman
-        .collection('tasks') // tasks collection
-        .doc(docId); // silmek istediğim döküman
-
-    return await collection
+  updateStatus(String gorevBaslikController, String gorevIcerikController) {
+    firestore
+        .collection('Tasks')
+        .doc('${auth.currentUser?.email}')
+        .collection('tasks')
+        .doc()
         .update({
       'GorevBaslik': gorevBaslikController,
       'GorevIcerik': gorevIcerikController,
+
+
     });
   }
-
-
 }
